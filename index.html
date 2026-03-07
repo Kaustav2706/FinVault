@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinVault — Personal Finance Tracker</title>
+    <meta name="description"
+        content="A modern personal finance tracker to manage your income, expenses, budgets, savings goals, and more." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">💰</span>
+                <span class="logo-text">FinVault</span>
+            </div>
+            <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-link active" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="#" class="nav-link" data-section="transactions"><span class="nav-icon">💳</span> Transactions</a>
+            <a href="#" class="nav-link" data-section="budgets"><span class="nav-icon">🎯</span> Budgets</a>
+            <a href="#" class="nav-link" data-section="analytics"><span class="nav-icon">📈</span> Analytics</a>
+            <a href="#" class="nav-link" data-section="goals"><span class="nav-icon">🏆</span> Savings Goals</a>
+            <a href="#" class="nav-link" data-section="recurring"><span class="nav-icon">🔄</span> Recurring</a>
+            <a href="#" class="nav-link" data-section="accounts"><span class="nav-icon">🏦</span> Accounts</a>
+            <a href="#" class="nav-link" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============ MAIN ============ -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+            <h1 class="page-title" id="pageTitle">Dashboard</h1>
+            <div class="topbar-actions">
+                <select class="currency-selector" id="currencySelect" aria-label="Select currency">
+                    <option value="USD">$ USD</option>
+                    <option value="INR">₹ INR</option>
+                    <option value="EUR">€ EUR</option>
+                    <option value="GBP">£ GBP</option>
+                </select>
+                <button class="btn btn-primary btn-add-txn" id="openAddTxn">+ Add Transaction</button>
+                <button class="btn-icon" id="darkModeToggle" aria-label="Toggle dark mode">🌙</button>
+            </div>
+        </header>
+
+        <!-- Alerts Container -->
+        <div id="alertsContainer" class="alerts-container"></div>
+
+        <!-- ===== DASHBOARD ===== -->
+        <section class="content-section active" id="section-dashboard">
+            <div class="summary-cards">
+                <div class="summary-card card-balance">
+                    <div class="card-icon">💵</div>
+                    <div class="card-info">
+                        <span class="card-label">Total Balance</span>
+                        <span class="card-value" id="totalBalance">$0.00</span>
+                    </div>
+                </div>
+                <div class="summary-card card-income">
+                    <div class="card-icon">📈</div>
+                    <div class="card-info">
+                        <span class="card-label">Total Income</span>
+                        <span class="card-value" id="totalIncome">$0.00</span>
+                    </div>
+                </div>
+                <div class="summary-card card-expense">
+                    <div class="card-icon">📉</div>
+                    <div class="card-info">
+                        <span class="card-label">Total Expenses</span>
+                        <span class="card-value" id="totalExpenses">$0.00</span>
+                    </div>
+                </div>
+                <div class="summary-card card-savings">
+                    <div class="card-icon">🐷</div>
+                    <div class="card-info">
+                        <span class="card-label">Savings Rate</span>
+                        <span class="card-value" id="savingsRate">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Progress Overview -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3 class="card-title">Budget Overview</h3>
+                    <div id="dashBudgetBars" class="budget-bars-container">
+                        <p class="empty-state">No budgets set yet.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Spending by Category</h3>
+                    <div class="chart-wrapper-sm">
+                        <canvas id="dashPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Insights -->
+            <div class="card">
+                <h3 class="card-title">💡 Smart Insights</h3>
+                <div id="insightsContainer" class="insights-list">
+                    <p class="empty-state">Add transactions to see insights.</p>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card">
+                <h3 class="card-title">Recent Transactions</h3>
+                <div id="recentTransactions" class="txn-list">
+                    <p class="empty-state">No transactions yet.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TRANSACTIONS ===== -->
+        <section class="content-section" id="section-transactions">
+            <div class="section-header">
+                <h2>Transaction History</h2>
+                <div class="filter-bar">
+                    <select id="filterCategory" class="input-select">
+                        <option value="all">All Categories</option>
+                    </select>
+                    <select id="filterType" class="input-select">
+                        <option value="all">All Types</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <select id="sortDate" class="input-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                </div>
+            </div>
+            <div id="transactionList" class="txn-list">
+                <p class="empty-state">No transactions found.</p>
+            </div>
+        </section>
+
+        <!-- ===== BUDGETS ===== -->
+        <section class="content-section" id="section-budgets">
+            <h2>Budget Limits</h2>
+            <div class="budget-settings-grid">
+                <div class="card">
+                    <h3 class="card-title">Daily Budget</h3>
+                    <div class="budget-input-group">
+                        <input type="number" id="dailyBudgetInput" class="input-field" placeholder="Set daily limit"
+                            min="0" step="0.01" />
+                        <button class="btn btn-primary" id="saveDailyBudget">Save</button>
+                    </div>
+                    <div class="progress-container" id="dailyProgressContainer">
+                        <div class="progress-info"><span id="dailySpent">$0</span> / <span id="dailyLimit">$0</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="dailyProgressBar" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Monthly Budget</h3>
+                    <div class="budget-input-group">
+                        <input type="number" id="monthlyBudgetInput" class="input-field" placeholder="Set monthly limit"
+                            min="0" step="0.01" />
+                        <button class="btn btn-primary" id="saveMonthlyBudget">Save</button>
+                    </div>
+                    <div class="progress-container" id="monthlyProgressContainer">
+                        <div class="progress-info"><span id="monthlySpent">$0</span> / <span id="monthlyLimit">$0</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="monthlyProgressBar" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:1.5rem">
+                <h3 class="card-title">Category Budgets</h3>
+                <div id="categoryBudgets" class="category-budget-list"></div>
+                <div class="budget-input-group" style="margin-top:1rem">
+                    <select id="catBudgetSelect" class="input-select"></select>
+                    <input type="number" id="catBudgetAmount" class="input-field" placeholder="Limit" min="0"
+                        step="0.01" />
+                    <button class="btn btn-primary" id="saveCatBudget">Set</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ANALYTICS ===== -->
+        <section class="content-section" id="section-analytics">
+            <h2>Expense Analytics</h2>
+            <div class="analytics-grid">
+                <div class="card">
+                    <h3 class="card-title">📊 Spending by Category</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="categoryPieChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">📅 Daily Expenses (Last 14 Days)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="dailyBarChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">📈 Monthly Expense Trend</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="monthlyLineChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">📊 Monthly Comparison</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="monthlyBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SAVINGS GOALS ===== -->
+        <section class="content-section" id="section-goals">
+            <div class="section-header">
+                <h2>Savings Goals</h2>
+                <button class="btn btn-primary" id="openAddGoal">+ New Goal</button>
+            </div>
+            <div id="goalsList" class="goals-grid">
+                <p class="empty-state">No savings goals yet. Create one!</p>
+            </div>
+        </section>
+
+        <!-- ===== RECURRING ===== -->
+        <section class="content-section" id="section-recurring">
+            <div class="section-header">
+                <h2>Recurring Expenses</h2>
+                <button class="btn btn-primary" id="openAddRecurring">+ Add Recurring</button>
+            </div>
+            <div id="recurringList" class="recurring-grid">
+                <p class="empty-state">No recurring expenses set.</p>
+            </div>
+        </section>
+
+        <!-- ===== ACCOUNTS ===== -->
+        <section class="content-section" id="section-accounts">
+            <div class="section-header">
+                <h2>Accounts</h2>
+                <button class="btn btn-primary" id="openAddAccount">+ Add Account</button>
+            </div>
+            <div id="accountsList" class="accounts-grid">
+                <!-- populated by JS -->
+            </div>
+        </section>
+
+        <!-- ===== SETTINGS ===== -->
+        <section class="content-section" id="section-settings">
+            <h2>Settings</h2>
+            <div class="settings-grid">
+                <div class="card">
+                    <h3 class="card-title">Appearance</h3>
+                    <div class="setting-row">
+                        <span>Dark Mode</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeCheckbox" />
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Currency</span>
+                        <select class="currency-selector" id="currencySelectSettings" aria-label="Select currency">
+                            <option value="USD">$ USD</option>
+                            <option value="INR">₹ INR</option>
+                            <option value="EUR">€ EUR</option>
+                            <option value="GBP">£ GBP</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Custom Categories</h3>
+                    <div id="customCatList" class="custom-cat-list"></div>
+                    <div class="budget-input-group" style="margin-top:1rem">
+                        <input type="text" id="newCatName" class="input-field" placeholder="Category name" />
+                        <input type="text" id="newCatIcon" class="input-field" placeholder="Emoji icon" maxlength="2"
+                            style="max-width:70px" />
+                        <button class="btn btn-primary" id="addCustomCat">Add</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Export Data</h3>
+                    <p class="card-desc">Download your financial data.</p>
+                    <div class="export-buttons">
+                        <button class="btn btn-outline" id="exportCSV">📄 Export CSV</button>
+                        <button class="btn btn-outline" id="exportPDF">📑 Export PDF</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Data Management</h3>
+                    <p class="card-desc">Clear all stored data. This action cannot be undone.</p>
+                    <button class="btn btn-danger" id="clearAllData">🗑️ Clear All Data</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============ MODALS ============ -->
+
+    <!-- Add/Edit Transaction Modal -->
+    <div class="modal-overlay" id="txnModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="txnModalTitle">Add Transaction</h3>
+                <button class="modal-close" id="closeTxnModal">✕</button>
+            </div>
+            <form id="txnForm" class="modal-body">
+                <input type="hidden" id="txnEditId" />
+                <div class="form-group">
+                    <label for="txnTitle">Description</label>
+                    <input type="text" id="txnTitle" class="input-field" placeholder="e.g. Grocery shopping" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="txnAmount">Amount ($)</label>
+                        <input type="number" id="txnAmount" class="input-field" placeholder="0.00" step="0.01"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="txnType">Type</label>
+                        <select id="txnType" class="input-select">
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="txnCategory">Category</label>
+                        <select id="txnCategory" class="input-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txnDate">Date</label>
+                        <input type="date" id="txnDate" class="input-field" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="txnAccount">Account</label>
+                    <select id="txnAccount" class="input-select"></select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Save Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div class="modal-overlay" id="goalModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="goalModalTitle">New Savings Goal</h3>
+                <button class="modal-close" id="closeGoalModal">✕</button>
+            </div>
+            <form id="goalForm" class="modal-body">
+                <input type="hidden" id="goalEditId" />
+                <div class="form-group">
+                    <label for="goalName">Goal Name</label>
+                    <input type="text" id="goalName" class="input-field" placeholder="e.g. Emergency Fund" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="goalTarget">Target Amount ($)</label>
+                        <input type="number" id="goalTarget" class="input-field" placeholder="0.00" step="0.01" min="1"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="goalSaved">Already Saved ($)</label>
+                        <input type="number" id="goalSaved" class="input-field" placeholder="0.00" step="0.01" min="0"
+                            value="0" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Save Goal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Recurring Modal -->
+    <div class="modal-overlay" id="recurringModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Recurring Expense</h3>
+                <button class="modal-close" id="closeRecurringModal">✕</button>
+            </div>
+            <form id="recurringForm" class="modal-body">
+                <div class="form-group">
+                    <label for="recTitle">Description</label>
+                    <input type="text" id="recTitle" class="input-field" placeholder="e.g. Netflix" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recAmount">Amount ($)</label>
+                        <input type="number" id="recAmount" class="input-field" placeholder="0.00" step="0.01"
+                            min="0.01" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="recCategory">Category</label>
+                        <select id="recCategory" class="input-select"></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recDay">Day of Month</label>
+                        <input type="number" id="recDay" class="input-field" placeholder="1-28" min="1" max="28"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="recAccount">Account</label>
+                        <select id="recAccount" class="input-select"></select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Add Recurring</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Account</h3>
+                <button class="modal-close" id="closeAccountModal">✕</button>
+            </div>
+            <form id="accountForm" class="modal-body">
+                <div class="form-group">
+                    <label for="accName">Account Name</label>
+                    <input type="text" id="accName" class="input-field" placeholder="e.g. Savings Account" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="accType">Type</label>
+                        <select id="accType" class="input-select">
+                            <option value="Cash">Cash</option>
+                            <option value="Bank">Bank</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="accBalance">Opening Balance ($)</label>
+                        <input type="number" id="accBalance" class="input-field" placeholder="0.00" step="0.01"
+                            value="0" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="accIcon">Icon (emoji)</label>
+                    <input type="text" id="accIcon" class="input-field" placeholder="💳" maxlength="2" value="💳" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Add Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3>Confirm</h3>
+                <button class="modal-close" id="closeConfirmModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure?</p>
+                <div class="confirm-actions">
+                    <button class="btn btn-outline" id="confirmCancel">Cancel</button>
+                    <button class="btn btn-danger" id="confirmOk">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="charts.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

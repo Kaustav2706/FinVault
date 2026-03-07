@@ -1,0 +1,8 @@
+{
+  "name": "finvault",
+  "version": "1.0.0",
+  "description": "Personal Finance Tracker",
+  "scripts": {
+    "start": "npx --yes http-server . -p 3000 -o"
+  }
+}

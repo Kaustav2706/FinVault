@@ -7,23 +7,23 @@
 
     // ========== Default Data ==========
     const DEFAULT_CATEGORIES = [
-        { name: 'Food', icon: '🍔' },
-        { name: 'Transport', icon: '🚗' },
-        { name: 'Shopping', icon: '🛍️' },
-        { name: 'Entertainment', icon: '🎮' },
-        { name: 'Rent', icon: '🏠' },
-        { name: 'Bills', icon: '📄' },
-        { name: 'Salary', icon: '💰' },
-        { name: 'Freelance', icon: '💻' },
-        { name: 'Investment', icon: '📊' },
-        { name: 'Other', icon: '📌' }
+        { name: 'Food', icon: '' },
+        { name: 'Transport', icon: '' },
+        { name: 'Shopping', icon: '' },
+        { name: 'Entertainment', icon: '' },
+        { name: 'Rent', icon: '' },
+        { name: 'Bills', icon: '' },
+        { name: 'Salary', icon: '' },
+        { name: 'Freelance', icon: '' },
+        { name: 'Investment', icon: '' },
+        { name: 'Other', icon: '' }
     ];
 
     const DEFAULT_ACCOUNTS = [
-        { id: genId(), name: 'Cash', type: 'Cash', icon: '💵', balance: 0 },
-        { id: genId(), name: 'Bank Account', type: 'Bank', icon: '🏦', balance: 0 },
-        { id: genId(), name: 'UPI', type: 'UPI', icon: '📱', balance: 0 },
-        { id: genId(), name: 'Credit Card', type: 'Credit Card', icon: '💳', balance: 0 }
+        { id: genId(), name: 'Cash', type: 'Cash', icon: '', balance: 0 },
+        { id: genId(), name: 'Bank Account', type: 'Bank', icon: '', balance: 0 },
+        { id: genId(), name: 'UPI', type: 'UPI', icon: '', balance: 0 },
+        { id: genId(), name: 'Credit Card', type: 'Credit Card', icon: '', balance: 0 }
     ];
 
     // ========== Currency Config ==========
@@ -70,6 +70,11 @@
         // Ensure defaults
         if (!state.categories || state.categories.length === 0) state.categories = [...DEFAULT_CATEGORIES];
         if (!state.accounts || state.accounts.length === 0) state.accounts = [...DEFAULT_ACCOUNTS];
+
+        // Strip out existing emojis from loaded state
+        if (state.categories) state.categories.forEach(c => c.icon = '');
+        if (state.accounts) state.accounts.forEach(a => a.icon = '');
+
         if (!state.budgets) state.budgets = { daily: 0, monthly: 0, categories: {} };
         if (!state.goals) state.goals = [];
         if (!state.recurring) state.recurring = [];
@@ -170,7 +175,7 @@
         state.darkMode = !document.body.classList.contains('dark-mode');
         document.body.classList.toggle('dark-mode', state.darkMode);
         $('darkModeCheckbox').checked = state.darkMode;
-        $('darkModeToggle').textContent = state.darkMode ? '☀️' : '🌙';
+        $('darkModeToggle').textContent = state.darkMode ? 'Light' : 'Theme';
         save();
         // Re-render charts with new theme
         FinCharts.updateAll(state.transactions);
@@ -181,7 +186,7 @@
 
     function getCategoryIcon(name) {
         const cat = state.categories.find(c => c.name === name);
-        return cat ? cat.icon : '📌';
+        return cat ? cat.icon : '';
     }
 
     function populateCategorySelects() {
@@ -198,7 +203,7 @@
             state.categories.forEach(cat => {
                 const opt = document.createElement('option');
                 opt.value = cat.name;
-                opt.textContent = `${cat.icon} ${cat.name}`;
+                opt.textContent = `${cat.name}`;
                 sel.appendChild(opt);
             });
             if (currentVal) sel.value = currentVal;
@@ -215,7 +220,7 @@
             state.accounts.forEach(acc => {
                 const opt = document.createElement('option');
                 opt.value = acc.id;
-                opt.textContent = `${acc.icon} ${acc.name}`;
+                opt.textContent = `${acc.name}`;
                 sel.appendChild(opt);
             });
             if (currentVal) sel.value = currentVal;
@@ -235,7 +240,7 @@
         custom.forEach(cat => {
             const tag = document.createElement('span');
             tag.className = 'cat-tag';
-            tag.innerHTML = `${cat.icon} ${cat.name} <button data-cat="${cat.name}" title="Remove">✕</button>`;
+            tag.innerHTML = `${cat.name} <button data-cat="${cat.name}" title="Remove">✕</button>`;
             tag.querySelector('button').addEventListener('click', () => {
                 state.categories = state.categories.filter(c => c.name !== cat.name);
                 save();
@@ -249,7 +254,7 @@
     function initCustomCategories() {
         $('addCustomCat').addEventListener('click', () => {
             const name = $('newCatName').value.trim();
-            const icon = $('newCatIcon').value.trim() || '📌';
+            const icon = '';
             if (!name) return;
             if (state.categories.find(c => c.name.toLowerCase() === name.toLowerCase())) {
                 showAlert('Category already exists', 'warning');
@@ -367,8 +372,8 @@
         const accName = getAccountName(t.account);
         const actions = showActions ? `
       <div class="txn-actions">
-        <button class="edit-txn" data-id="${t.id}" title="Edit">✏️</button>
-        <button class="delete-txn" data-id="${t.id}" title="Delete">🗑️</button>
+        <button class="edit-txn" data-id="${t.id}" title="Edit">Edit</button>
+        <button class="delete-txn" data-id="${t.id}" title="Delete">Delete</button>
       </div>` : '';
         return `
       <div class="txn-item">
@@ -518,7 +523,7 @@
                 return `
           <div class="category-budget-item">
             <div class="category-budget-header">
-              <span>${getCategoryIcon(cat)} ${cat}</span>
+              <span>${cat}</span>
               <span>${fmt(spent)} / ${fmt(limit)}</span>
             </div>
             <div class="progress-bar"><div class="progress-fill ${cls}" style="width:${pct}%"></div></div>
@@ -561,7 +566,7 @@
             const cls = pct >= 100 ? 'danger' : pct >= 80 ? 'warning' : '';
             bars.push(`
         <div class="budget-bar-item">
-          <label>${getCategoryIcon(cat)} ${cat}: ${fmt(spent)} / ${fmt(limit)}</label>
+          <label>${cat}: ${fmt(spent)} / ${fmt(limit)}</label>
           <div class="progress-bar"><div class="progress-fill ${cls}" style="width:${pct}%"></div></div>
         </div>`);
         });
@@ -589,7 +594,7 @@
         if (state.budgets.daily > 0) {
             const spent = getDailySpent();
             const pct = spent / state.budgets.daily * 100;
-            if (pct >= 100) showAlert(`⚠️ You've exceeded your daily budget! (${fmt(spent)} / ${fmt(state.budgets.daily)})`, 'danger');
+            if (pct >= 100) showAlert(`You've exceeded your daily budget! (${fmt(spent)} / ${fmt(state.budgets.daily)})`, 'danger');
             else if (pct >= 80) showAlert(`Daily budget is at ${pct.toFixed(0)}% — slow down on spending!`, 'warning');
         }
 
@@ -597,7 +602,7 @@
         if (state.budgets.monthly > 0) {
             const spent = getMonthlySpent();
             const pct = spent / state.budgets.monthly * 100;
-            if (pct >= 100) showAlert(`⚠️ Monthly budget exceeded! (${fmt(spent)} / ${fmt(state.budgets.monthly)})`, 'danger');
+            if (pct >= 100) showAlert(`Monthly budget exceeded! (${fmt(spent)} / ${fmt(state.budgets.monthly)})`, 'danger');
             else if (pct >= 80) showAlert(`Monthly budget is at ${pct.toFixed(0)}% — watch your spending!`, 'warning');
         }
 
@@ -607,7 +612,7 @@
             const limit = catBudgets[cat];
             const spent = getCategorySpent(cat);
             const pct = limit > 0 ? spent / limit * 100 : 0;
-            if (pct >= 100) showAlert(`⚠️ ${cat} budget exceeded! (${fmt(spent)} / ${fmt(limit)})`, 'danger');
+            if (pct >= 100) showAlert(`${cat} budget exceeded! (${fmt(spent)} / ${fmt(limit)})`, 'danger');
             else if (pct >= 80) showAlert(`${cat} budget at ${pct.toFixed(0)}% — consider limiting ${cat.toLowerCase()} expenses`, 'warning');
         });
     }
@@ -658,9 +663,9 @@
             if (lastAmt > 0) {
                 const pctChange = ((thisAmt - lastAmt) / lastAmt * 100).toFixed(0);
                 if (pctChange > 20) {
-                    insights.push({ icon: '📈', text: `You spent ${pctChange}% more on ${cat} this month compared to last month.` });
+                    insights.push({ icon: '', text: `You spent ${pctChange}% more on ${cat} this month compared to last month.` });
                 } else if (pctChange < -20) {
-                    insights.push({ icon: '📉', text: `Great! You reduced ${cat} spending by ${Math.abs(pctChange)}% this month.` });
+                    insights.push({ icon: '', text: `Great! You reduced ${cat} spending by ${Math.abs(pctChange)}% this month.` });
                 }
             }
         });
@@ -668,7 +673,7 @@
         // Top expense category
         const topCat = Object.entries(catSpendThisMonth).sort((a, b) => b[1] - a[1])[0];
         if (topCat) {
-            insights.push({ icon: '🏷️', text: `${topCat[0]} is your biggest expense category this month (${fmt(topCat[1])}).` });
+            insights.push({ icon: '', text: `${topCat[0]} is your biggest expense category this month (${fmt(topCat[1])}).` });
         }
 
         // Savings insight
@@ -677,17 +682,17 @@
         if (totalIncome > 0) {
             const rate = ((totalIncome - totalExpenses) / totalIncome * 100).toFixed(1);
             if (rate > 30) {
-                insights.push({ icon: '🎉', text: `Amazing! You're saving ${rate}% of your income this month.` });
+                insights.push({ icon: '', text: `Amazing! You're saving ${rate}% of your income this month.` });
             } else if (rate > 0) {
-                insights.push({ icon: '💡', text: `You're saving ${rate}% of your income this month. Aim for 20%+!` });
+                insights.push({ icon: '', text: `You're saving ${rate}% of your income this month. Aim for 20%+!` });
             } else {
-                insights.push({ icon: '⚠️', text: `You're spending more than you earn this month. Review your expenses!` });
+                insights.push({ icon: '', text: `You're spending more than you earn this month. Review your expenses!` });
             }
         }
 
         // Transaction count
         if (thisMonth.length > 0) {
-            insights.push({ icon: '📋', text: `You have ${thisMonth.length} transaction${thisMonth.length > 1 ? 's' : ''} this month.` });
+            insights.push({ icon: '', text: `You have ${thisMonth.length} transaction${thisMonth.length > 1 ? 's' : ''} this month.` });
         }
 
         return insights;
@@ -740,8 +745,8 @@
             return `
         <div class="goal-card">
           <div class="goal-header">
-            <span class="goal-name">🏆 ${escHTML(g.name)}</span>
-            <button class="btn btn-sm btn-outline delete-goal" data-id="${g.id}">🗑️</button>
+            <span class="goal-name">${escHTML(g.name)}</span>
+            <button class="btn btn-sm btn-outline delete-goal" data-id="${g.id}">Delete</button>
           </div>
           <div class="progress-bar"><div class="progress-fill ${pct >= 100 ? '' : cls}" style="width:${pct}%;${pct >= 100 ? 'background:var(--success)' : ''}"></div></div>
           <div class="goal-amounts">
@@ -752,7 +757,7 @@
           <div class="goal-actions">
             <input type="number" class="input-field goal-add-amount" placeholder="Add amount" min="0" step="0.01" />
             <button class="btn btn-sm btn-primary add-to-goal" data-id="${g.id}">+ Add</button>
-            <button class="btn btn-sm btn-outline edit-goal" data-id="${g.id}">✏️</button>
+            <button class="btn btn-sm btn-outline edit-goal" data-id="${g.id}">Edit</button>
           </div>
         </div>`;
         }).join('');
@@ -840,7 +845,7 @@
           </div>
           <span class="recurring-amount">-${fmt(r.amount)}</span>
           <div class="txn-actions">
-            <button class="delete-recurring" data-id="${r.id}" title="Delete">🗑️</button>
+            <button class="delete-recurring" data-id="${r.id}" title="Delete">Delete</button>
           </div>
         </div>`;
         }).join('');
@@ -866,7 +871,7 @@
                 // Auto-add this month's transaction
                 state.transactions.push({
                     id: genId(),
-                    title: `🔄 ${rec.title}`,
+                    title: `${rec.title}`,
                     amount: -Math.abs(rec.amount),
                     type: 'expense',
                     category: rec.category,
@@ -883,7 +888,6 @@
     function initAccounts() {
         $('openAddAccount').addEventListener('click', () => {
             $('accountForm').reset();
-            $('accIcon').value = '💳';
             openModal('accountModal');
         });
 
@@ -895,7 +899,7 @@
                 id: genId(),
                 name: $('accName').value.trim(),
                 type: $('accType').value,
-                icon: $('accIcon').value.trim() || '💳',
+                icon: '',
                 balance: parseFloat($('accBalance').value) || 0
             };
             state.accounts.push(acc);
@@ -926,12 +930,11 @@
             const bal = getAccountBalance(acc.id);
             return `
         <div class="account-card">
-          <div class="account-icon">${acc.icon}</div>
           <div class="account-name">${escHTML(acc.name)}</div>
           <div class="account-type">${acc.type}</div>
           <div class="account-balance" style="color:${bal >= 0 ? 'var(--success)' : 'var(--danger)'}">${bal >= 0 ? '' : '-'}${fmt(bal)}</div>
           <div class="account-actions">
-            <button class="btn btn-sm btn-outline delete-account" data-id="${acc.id}">🗑️ Remove</button>
+            <button class="btn btn-sm btn-outline delete-account" data-id="${acc.id}">Remove</button>
           </div>
         </div>`;
         }).join('');
@@ -1108,7 +1111,7 @@
         const alert = document.createElement('div');
         alert.className = `alert alert-${type}`;
         alert.innerHTML = `
-      <span>${type === 'danger' ? '🚨' : '⚠️'} ${message}</span>
+      <span>${message}</span>
       <button class="alert-close" onclick="this.parentElement.remove()">✕</button>`;
         container.appendChild(alert);
         setTimeout(() => { if (alert.parentElement) alert.remove(); }, 5000);

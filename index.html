@@ -19,20 +19,19 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
-                <span class="logo-icon">💰</span>
                 <span class="logo-text">FinVault</span>
             </div>
             <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕</button>
         </div>
         <nav class="sidebar-nav">
-            <a href="#" class="nav-link active" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
-            <a href="#" class="nav-link" data-section="transactions"><span class="nav-icon">💳</span> Transactions</a>
-            <a href="#" class="nav-link" data-section="budgets"><span class="nav-icon">🎯</span> Budgets</a>
-            <a href="#" class="nav-link" data-section="analytics"><span class="nav-icon">📈</span> Analytics</a>
-            <a href="#" class="nav-link" data-section="goals"><span class="nav-icon">🏆</span> Savings Goals</a>
-            <a href="#" class="nav-link" data-section="recurring"><span class="nav-icon">🔄</span> Recurring</a>
-            <a href="#" class="nav-link" data-section="accounts"><span class="nav-icon">🏦</span> Accounts</a>
-            <a href="#" class="nav-link" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+            <a href="#" class="nav-link active" data-section="dashboard">Dashboard</a>
+            <a href="#" class="nav-link" data-section="transactions">Transactions</a>
+            <a href="#" class="nav-link" data-section="budgets">Budgets</a>
+            <a href="#" class="nav-link" data-section="analytics">Analytics</a>
+            <a href="#" class="nav-link" data-section="goals">Savings Goals</a>
+            <a href="#" class="nav-link" data-section="recurring">Recurring</a>
+            <a href="#" class="nav-link" data-section="accounts">Accounts</a>
+            <a href="#" class="nav-link" data-section="settings">Settings</a>
         </nav>
     </aside>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -53,7 +52,7 @@
                     <option value="GBP">£ GBP</option>
                 </select>
                 <button class="btn btn-primary btn-add-txn" id="openAddTxn">+ Add Transaction</button>
-                <button class="btn-icon" id="darkModeToggle" aria-label="Toggle dark mode">🌙</button>
+                <button class="btn btn-outline" id="darkModeToggle" aria-label="Toggle dark mode">Theme</button>
             </div>
         </header>
 
@@ -64,28 +63,24 @@
         <section class="content-section active" id="section-dashboard">
             <div class="summary-cards">
                 <div class="summary-card card-balance">
-                    <div class="card-icon">💵</div>
                     <div class="card-info">
                         <span class="card-label">Total Balance</span>
                         <span class="card-value" id="totalBalance">$0.00</span>
                     </div>
                 </div>
                 <div class="summary-card card-income">
-                    <div class="card-icon">📈</div>
                     <div class="card-info">
                         <span class="card-label">Total Income</span>
                         <span class="card-value" id="totalIncome">$0.00</span>
                     </div>
                 </div>
                 <div class="summary-card card-expense">
-                    <div class="card-icon">📉</div>
                     <div class="card-info">
                         <span class="card-label">Total Expenses</span>
                         <span class="card-value" id="totalExpenses">$0.00</span>
                     </div>
                 </div>
                 <div class="summary-card card-savings">
-                    <div class="card-icon">🐷</div>
                     <div class="card-info">
                         <span class="card-label">Savings Rate</span>
                         <span class="card-value" id="savingsRate">0%</span>
@@ -111,7 +106,7 @@
 
             <!-- Smart Insights -->
             <div class="card">
-                <h3 class="card-title">💡 Smart Insights</h3>
+                <h3 class="card-title">Smart Insights</h3>
                 <div id="insightsContainer" class="insights-list">
                     <p class="empty-state">Add transactions to see insights.</p>
                 </div>
@@ -203,25 +198,25 @@
             <h2>Expense Analytics</h2>
             <div class="analytics-grid">
                 <div class="card">
-                    <h3 class="card-title">📊 Spending by Category</h3>
+                    <h3 class="card-title">Spending by Category</h3>
                     <div class="chart-wrapper">
                         <canvas id="categoryPieChart"></canvas>
                     </div>
                 </div>
                 <div class="card">
-                    <h3 class="card-title">📅 Daily Expenses (Last 14 Days)</h3>
+                    <h3 class="card-title">Daily Expenses (Last 14 Days)</h3>
                     <div class="chart-wrapper">
                         <canvas id="dailyBarChart"></canvas>
                     </div>
                 </div>
                 <div class="card">
-                    <h3 class="card-title">📈 Monthly Expense Trend</h3>
+                    <h3 class="card-title">Monthly Expense Trend</h3>
                     <div class="chart-wrapper">
                         <canvas id="monthlyLineChart"></canvas>
                     </div>
                 </div>
                 <div class="card">
-                    <h3 class="card-title">📊 Monthly Comparison</h3>
+                    <h3 class="card-title">Monthly Comparison</h3>
                     <div class="chart-wrapper">
                         <canvas id="monthlyBarChart"></canvas>
                     </div>
@@ -290,8 +285,6 @@
                     <div id="customCatList" class="custom-cat-list"></div>
                     <div class="budget-input-group" style="margin-top:1rem">
                         <input type="text" id="newCatName" class="input-field" placeholder="Category name" />
-                        <input type="text" id="newCatIcon" class="input-field" placeholder="Emoji icon" maxlength="2"
-                            style="max-width:70px" />
                         <button class="btn btn-primary" id="addCustomCat">Add</button>
                     </div>
                 </div>
@@ -299,14 +292,14 @@
                     <h3 class="card-title">Export Data</h3>
                     <p class="card-desc">Download your financial data.</p>
                     <div class="export-buttons">
-                        <button class="btn btn-outline" id="exportCSV">📄 Export CSV</button>
-                        <button class="btn btn-outline" id="exportPDF">📑 Export PDF</button>
+                        <button class="btn btn-outline" id="exportCSV">Export CSV</button>
+                        <button class="btn btn-outline" id="exportPDF">Export PDF</button>
                     </div>
                 </div>
                 <div class="card">
                     <h3 class="card-title">Data Management</h3>
                     <p class="card-desc">Clear all stored data. This action cannot be undone.</p>
-                    <button class="btn btn-danger" id="clearAllData">🗑️ Clear All Data</button>
+                    <button class="btn btn-danger" id="clearAllData">Clear All Data</button>
                 </div>
             </div>
         </section>
@@ -458,10 +451,6 @@
                             value="0" />
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="accIcon">Icon (emoji)</label>
-                    <input type="text" id="accIcon" class="input-field" placeholder="💳" maxlength="2" value="💳" />
-                </div>
                 <button type="submit" class="btn btn-primary btn-full">Add Account</button>
             </form>
         </div>
@@ -488,23 +477,18 @@
     <nav class="mobile-bottom-nav" id="mobileBottomNav">
         <div class="nav-items">
             <button class="bottom-nav-btn active" data-section="dashboard">
-                <span class="nav-btn-icon">📊</span>
                 <span>Home</span>
             </button>
             <button class="bottom-nav-btn" data-section="transactions">
-                <span class="nav-btn-icon">💳</span>
                 <span>Txns</span>
             </button>
             <button class="bottom-nav-btn" data-section="budgets">
-                <span class="nav-btn-icon">🎯</span>
                 <span>Budget</span>
             </button>
             <button class="bottom-nav-btn" data-section="analytics">
-                <span class="nav-btn-icon">📈</span>
                 <span>Stats</span>
             </button>
             <button class="bottom-nav-btn" data-section="settings">
-                <span class="nav-btn-icon">⚙️</span>
                 <span>More</span>
             </button>
         </div>

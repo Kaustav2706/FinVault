@@ -319,7 +319,7 @@ body.dark-mode::before {
 }
 
 .hamburger {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 5px;
     padding: 4px;
@@ -1518,6 +1518,127 @@ body.dark-mode .alert-danger {
     }
 }
 
+/* ---------- Touch & Usability ---------- */
+html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    overscroll-behavior: contain;
+}
+
+/* Move hover effects behind a hover media query for touch devices */
+@media (hover: hover) {
+    .summary-card:hover {
+        transform: translateY(-5px) scale(1.01);
+    }
+
+    .txn-item:hover {
+        transform: translateX(4px);
+    }
+
+    .goal-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .recurring-card:hover {
+        transform: translateX(4px);
+    }
+
+    .account-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .nav-link:hover {
+        transform: translateX(3px);
+    }
+}
+
+/* ---------- Mobile Bottom Navigation ---------- */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 0.35rem 0;
+    padding-bottom: max(0.35rem, env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08);
+}
+
+.mobile-bottom-nav .nav-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.mobile-bottom-nav .bottom-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all var(--transition);
+    position: relative;
+    min-width: 48px;
+    min-height: 44px;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.mobile-bottom-nav .bottom-nav-btn .nav-btn-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: transform var(--transition-bounce);
+}
+
+.mobile-bottom-nav .bottom-nav-btn.active {
+    color: var(--accent);
+}
+
+.mobile-bottom-nav .bottom-nav-btn.active .nav-btn-icon {
+    transform: scale(1.15);
+}
+
+.mobile-bottom-nav .bottom-nav-btn.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: linear-gradient(90deg, #2d9d6f, #34d399);
+    border-radius: 0 0 4px 4px;
+}
+
+/* ---------- Desktop Sidebar Collapse ---------- */
+@media (min-width: 769px) {
+    body.sidebar-collapsed .sidebar {
+        transform: translateX(-100%);
+    }
+
+    body.sidebar-collapsed .main-content {
+        margin-left: 0;
+    }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
 
@@ -1547,29 +1668,101 @@ body.dark-mode .alert-danger {
 
     .main-content {
         margin-left: 0;
+        padding-bottom: 72px;
+        /* space for bottom nav */
     }
 
-    .hamburger {
-        display: flex;
+    /* --- Mobile Bottom Nav visible --- */
+    .mobile-bottom-nav {
+        display: block;
     }
 
+    /* --- Topbar --- */
     .topbar {
-        padding: 0 1rem;
+        padding: 0 0.75rem;
+        height: 56px;
+        gap: 0.5rem;
     }
 
+    .page-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
+
+    .topbar-actions {
+        gap: 0.4rem;
+    }
+
+    .currency-selector {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.75rem;
+        min-width: 0;
+    }
+
+    .btn-add-txn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    /* --- Content sections --- */
     .content-section {
-        padding: 1.25rem;
+        padding: 1rem;
     }
 
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.25rem;
+    }
+
+    /* --- Summary cards --- */
     .summary-cards {
         grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
     }
 
+    .summary-card {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .card-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+    }
+
+    .card-value {
+        font-size: 1.2rem;
+    }
+
+    .card-label {
+        font-size: 0.65rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* --- Cards --- */
+    .card {
+        padding: 1.15rem;
+    }
+
+    /* --- Form --- */
     .form-row {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
+    /* --- Filter bar --- */
     .filter-bar {
         width: 100%;
     }
@@ -1577,22 +1770,57 @@ body.dark-mode .alert-danger {
     .filter-bar select {
         flex: 1;
         min-width: 0;
+        font-size: 0.8rem;
     }
 
-    .btn-add-txn span {
-        display: none;
-    }
-
+    /* --- Transaction items --- */
     .txn-item {
+        padding: 0.85rem 1rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
     }
 
+    .txn-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+
+    .txn-title {
+        font-size: 0.85rem;
+    }
+
+    .txn-meta {
+        font-size: 0.7rem;
+    }
+
+    .txn-amount {
+        font-size: 0.9rem;
+    }
+
+    .txn-actions button {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    /* --- Charts --- */
+    .chart-wrapper {
+        max-height: 280px;
+    }
+
+    .chart-wrapper-sm {
+        max-height: 200px;
+    }
+
+    /* --- Grids --- */
     .goals-grid,
     .recurring-grid,
     .accounts-grid {
         grid-template-columns: 1fr;
     }
 
+    /* --- Budget inputs --- */
     .budget-input-group {
         flex-wrap: wrap;
     }
@@ -1601,16 +1829,222 @@ body.dark-mode .alert-danger {
     .budget-input-group .input-select {
         max-width: none;
         flex: 1;
+        min-width: 0;
+    }
+
+    /* --- Goal actions --- */
+    .goal-actions {
+        flex-wrap: wrap;
+    }
+
+    .goal-actions .input-field {
+        max-width: none;
+        flex: 1;
+    }
+
+    /* --- Alerts container --- */
+    .alerts-container {
+        left: 0.5rem;
+        right: 0.5rem;
+        max-width: none;
+    }
+
+    .alert {
+        font-size: 0.8rem;
+        padding: 0.85rem 1rem;
+    }
+
+    /* --- Modals --- */
+    .modal {
+        width: 95%;
+        max-width: 440px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 1rem 1.25rem;
+        position: sticky;
+        top: 0;
+        background: var(--bg-card);
+        z-index: 1;
+    }
+
+    .modal-body {
+        padding: 1.25rem;
+    }
+
+    /* --- Export buttons --- */
+    .export-buttons {
+        flex-direction: column;
+    }
+
+    .export-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* --- Recurring card --- */
+    .recurring-card {
+        padding: 1.15rem;
+    }
+
+    /* --- Account card --- */
+    .account-card {
+        padding: 1.15rem;
+    }
+
+    .account-balance {
+        font-size: 1.15rem;
     }
 }
 
 @media (max-width: 480px) {
     .summary-cards {
         grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+
+    .summary-card {
+        padding: 0.85rem 1rem;
+    }
+
+    .card-value {
+        font-size: 1.15rem;
     }
 
     .settings-grid {
         grid-template-columns: 1fr;
+    }
+
+    .content-section {
+        padding: 0.85rem;
+    }
+
+    .topbar {
+        padding: 0 0.6rem;
+    }
+
+    .page-title {
+        font-size: 0.95rem;
+    }
+
+    .btn-add-txn {
+        padding: 0.45rem 0.65rem;
+        font-size: 0.75rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 0.9rem;
+    }
+
+    /* --- Charts even smaller --- */
+    .chart-wrapper {
+        max-height: 240px;
+    }
+
+    .chart-wrapper-sm {
+        max-height: 180px;
+    }
+
+    /* --- Bottom nav font tweak --- */
+    .mobile-bottom-nav .bottom-nav-btn {
+        font-size: 0.55rem;
+        min-width: 44px;
+        padding: 0.3rem 0.35rem;
+    }
+
+    .mobile-bottom-nav .bottom-nav-btn .nav-btn-icon {
+        font-size: 1.15rem;
+    }
+
+    /* --- Insight items --- */
+    .insight-item {
+        font-size: 0.82rem;
+        padding: 0.75rem 0.9rem;
+    }
+
+    /* --- Budget bar labels --- */
+    .budget-bar-item label {
+        font-size: 0.8rem;
+    }
+
+    .progress-info {
+        font-size: 0.8rem;
+    }
+
+    /* -- Empty state -- */
+    .empty-state {
+        padding: 1.5rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .topbar {
+        height: 50px;
+        padding: 0 0.5rem;
+    }
+
+    .page-title {
+        font-size: 0.85rem;
+    }
+
+    .currency-selector {
+        padding: 0.3rem 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    .btn-add-txn {
+        padding: 0.4rem 0.55rem;
+        font-size: 0.7rem;
+    }
+
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .summary-card {
+        padding: 0.75rem;
+    }
+
+    .card-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .card-value {
+        font-size: 1rem;
+    }
+
+    .card-label {
+        font-size: 0.6rem;
+    }
+
+    .content-section {
+        padding: 0.65rem;
+    }
+
+    .card {
+        padding: 0.85rem;
+        border-radius: var(--radius-md);
+    }
+
+    .mobile-bottom-nav .bottom-nav-btn {
+        font-size: 0.5rem;
+        padding: 0.25rem 0.25rem;
+        min-width: 40px;
+    }
+
+    .mobile-bottom-nav .bottom-nav-btn .nav-btn-icon {
+        font-size: 1.05rem;
     }
 }
 

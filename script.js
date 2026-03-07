@@ -90,10 +90,23 @@
             });
         });
 
+        // Mobile bottom nav
+        const bottomBtns = document.querySelectorAll('.bottom-nav-btn');
+        bottomBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.dataset.section;
+                switchSection(section);
+            });
+        });
+
         // Hamburger
         $('hamburgerBtn').addEventListener('click', () => {
-            $('sidebar').classList.add('open');
-            $('sidebarOverlay').classList.add('open');
+            if (window.innerWidth <= 768) {
+                $('sidebar').classList.add('open');
+                $('sidebarOverlay').classList.add('open');
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+            }
         });
 
         $('sidebarClose').addEventListener('click', () => {
@@ -115,12 +128,20 @@
         const link = document.querySelector(`.nav-link[data-section="${name}"]`);
         if (link) link.classList.add('active');
 
+        // Sync mobile bottom nav active state
+        document.querySelectorAll('.bottom-nav-btn').forEach(b => b.classList.remove('active'));
+        const bottomBtn = document.querySelector(`.bottom-nav-btn[data-section="${name}"]`);
+        if (bottomBtn) bottomBtn.classList.add('active');
+
         const titles = {
             dashboard: 'Dashboard', transactions: 'Transactions', budgets: 'Budgets',
             analytics: 'Analytics', goals: 'Savings Goals', recurring: 'Recurring',
             accounts: 'Accounts', settings: 'Settings'
         };
         $('pageTitle').textContent = titles[name] || name;
+
+        // Scroll to top on section switch
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Refresh section-specific data
         if (name === 'dashboard') renderDashboard();
